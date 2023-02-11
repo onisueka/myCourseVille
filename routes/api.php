@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\BooksController;
+use App\Http\Controllers\TagsController;
+use App\Http\Controllers\AuthorsController;
 
 
 
@@ -23,3 +25,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/books', [BooksController::class, 'lists']);
+Route::post('/book', [BooksController::class, 'create']);
+Route::get('/tags', [TagsController::class, 'lists']);
+Route::get('/authors', [AuthorsController::class, 'lists']);

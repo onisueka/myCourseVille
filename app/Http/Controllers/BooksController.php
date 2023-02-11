@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class BooksController extends BaseController
 {
@@ -23,5 +24,24 @@ class BooksController extends BaseController
         endforeach;
 
         return response()->json($resultDatas);
+    }
+
+    function create (Request $request) {
+        $tags = $request->input('tags', []);
+        $tagDatas = [];
+        foreach($tags as $item):
+            $tagDatas[] = $item['tag_id'];
+        endforeach;
+
+        DB::table('books')->insert([
+            'title' => $request->input('title', null),
+            'author_id' => $request->input('author', null),
+            'price' => $request->input('price', 0),
+            'tag_ids' => json_encode($tagDatas)
+        ]);
+
+        return response()->json([
+            "message" => "book record created"
+        ], 201);
     }
 }
