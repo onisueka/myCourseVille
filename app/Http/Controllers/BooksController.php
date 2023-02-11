@@ -44,4 +44,13 @@ class BooksController extends BaseController
             "message" => "book record created"
         ], 201);
     }
+
+    function delete (Request $request) {
+
+        DB::table('books')->where('book_id', '=', $request->input('book_id'))->delete();
+
+        return response()->json([
+            "message" => "book record delete"
+        ], 204);
+    }
 }

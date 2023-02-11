@@ -65,15 +65,40 @@ function Books() {
         setTagSelected(selectedList)
     }
 
+    const onHandleDelete = async (item) => {
+        const resultData = await axios({
+            method: 'delete',
+            url: '/api/book',
+            data: {
+                book_id: item.book_id
+            }
+        });
+
+        if(resultData.status === 204) {
+            fetchAllData();
+        }
+    }
+
+    const onHandleEdit = (item) => {
+        axios({
+            method: 'delete',
+            url: '/api/book',
+            data: {
+                book_id: item.book_id
+            }
+        });
+        fetchAllData();
+    }
+
     const onSubmit = async (event) => {
         event.preventDefault();
         const resultData = await axios({
             method: 'post',
             url: '/api/book',
             data: formBook
-          });
+        });
 
-        if(resultData.status === 201) {
+        if (resultData.status === 201) {
             setformBook({
                 title: '',
                 author: '',
@@ -99,26 +124,26 @@ function Books() {
                         >
                             Create Book
                         </button>
-                        { JSON.stringify(formBook) }
+
                         {createBook && (
                             <form className="mt-3" onSubmit={onSubmit}>
                                 <div className="form-group">
                                     <label>Title</label>
-                                    <input 
-                                    type="text" 
-                                    className="form-control" 
-                                    id="title" 
-                                    value={formBook.title}
-                                    onChange={(e) => setformBook({...formBook, title: e.target.value})}
-                                    required />
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="title"
+                                        value={formBook.title}
+                                        onChange={(e) => setformBook({ ...formBook, title: e.target.value })}
+                                        required />
                                 </div>
                                 <div className="form-group">
                                     <label>Author</label>
-                                    <select 
-                                    className="form-select" 
-                                    value={formBook.author}
-                                    onChange={(e) => setformBook({...formBook, author: parseInt(e.target.value)})}
-                                    required>
+                                    <select
+                                        className="form-select"
+                                        value={formBook.author}
+                                        onChange={(e) => setformBook({ ...formBook, author: parseInt(e.target.value) })}
+                                        required>
                                         <option value="">Open this select Author</option>
                                         {authorDatas.map(item => (
                                             <option value={item.author_id} key={item.author_id}>{`${item.first_name} ${item.last_name}`}</option>
@@ -127,10 +152,10 @@ function Books() {
                                 </div>
                                 <div className="form-group">
                                     <label>Price</label>
-                                    <input type="number" className="form-control" id="price" 
-                                    value={formBook.price}
-                                    onChange={(e) => setformBook({...formBook, price: parseInt(e.target.value)})}
-                                    required/>
+                                    <input type="number" className="form-control" id="price"
+                                        value={formBook.price}
+                                        onChange={(e) => setformBook({ ...formBook, price: parseInt(e.target.value) })}
+                                        required />
                                 </div>
                                 <div className="form-group">
                                     <label>Tags</label>
@@ -167,10 +192,14 @@ function Books() {
                                     {bookDatas.map(item => (
                                         <tr key={item.book_id}>
                                             <th scope="row">
-                                                <button type="button" className="btn btn-secondary">
+                                                <button type="button"
+                                                    onClick={() => onHandleEdit(item)}
+                                                    className="btn btn-secondary">
                                                     Edit
                                                 </button>
-                                                <button type="button" className="btn btn-danger ms-2">
+                                                <button type="button"
+                                                    onClick={() => onHandleDelete(item)}
+                                                    className="btn btn-danger ms-2">
                                                     Delete
                                                 </button>
                                             </th>
