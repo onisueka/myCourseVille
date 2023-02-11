@@ -26,6 +26,10 @@ class BooksController extends BaseController
         return response()->json($resultDatas);
     }
 
+    function getById ($id) {
+        return DB::table('books')->where('book_id', $id)->first();
+    }
+
     function create (Request $request) {
         $tags = $request->input('tags', []);
         $tagDatas = [];

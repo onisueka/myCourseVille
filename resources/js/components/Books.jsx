@@ -5,7 +5,7 @@ import Multiselect from 'multiselect-react-dropdown';
 
 function Books() {
     const [bookDatas, setBookDatas] = useState([]);
-    const [createBook, setCreateBook] = useState(false);
+    const [openFormBook, setOpenFormBook] = useState(false);
     const [tagDatas, setTagDatas] = useState([]);
     const [tagSelected, setTagSelected] = useState([]);
     const [authorDatas, setAuthorDatas] = useState([]);
@@ -79,15 +79,26 @@ function Books() {
         }
     }
 
-    const onHandleEdit = (item) => {
-        axios({
-            method: 'delete',
-            url: '/api/book',
-            data: {
-                book_id: item.book_id
-            }
+    const onHandleEdit = async (item) => {
+        const resultData = await axios(
+            `api/book/${item.book_id}`,
+        );    
+        const bookData = resultData.data || {};
+        const authorData = authorDatas.find(item => item.author_id === bookData.author_id);
+        const tagIds = (JSON.parse(bookData.tag_ids) || []);
+        let tagData = [];
+        tagIds.forEach(item => {
+            tagData.push(tagDatas.find(i => i.tag_id === item));
         });
-        fetchAllData();
+
+        setformBook({
+            title: bookData.title,
+            author: authorData,
+            price: bookData.price,
+            tags: tagData
+        })
+        setTagSelected(tagData);
+        setOpenFormBook(true);
     }
 
     const onSubmit = async (event) => {
@@ -105,7 +116,7 @@ function Books() {
                 price: '',
                 tags: []
             });
-            setCreateBook(false);
+            setOpenFormBook(false);
             fetchAllData();
         } else {
             console.log('Error Create Book');
@@ -120,12 +131,12 @@ function Books() {
                         <button
                             type="button"
                             className="btn btn-success"
-                            onClick={() => setCreateBook(!createBook)}
+                            onClick={() => setOpenFormBook(!openFormBook)}
                         >
                             Create Book
                         </button>
 
-                        {createBook && (
+                        {openFormBook && (
                             <form className="mt-3" onSubmit={onSubmit}>
                                 <div className="form-group">
                                     <label>Title</label>
@@ -141,7 +152,7 @@ function Books() {
                                     <label>Author</label>
                                     <select
                                         className="form-select"
-                                        value={formBook.author}
+                                        value={formBook.author?.author_id}
                                         onChange={(e) => setformBook({ ...formBook, author: parseInt(e.target.value) })}
                                         required>
                                         <option value="">Open this select Author</option>
@@ -161,6 +172,7 @@ function Books() {
                                     <label>Tags</label>
                                     <Multiselect
                                         options={tagDatas}
+                                        defaultValue={formBook.tags}
                                         selectedValues={tagSelected}
                                         onSelect={onSelectTag}
                                         onRemove={onRemoveTag}
