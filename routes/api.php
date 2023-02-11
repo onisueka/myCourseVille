@@ -2,7 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BookController;
+
+use App\Http\Controllers\BooksController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -19,4 +22,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/books', [BookController::class, 'list']);
+Route::get('/books', [BooksController::class, 'lists']);
