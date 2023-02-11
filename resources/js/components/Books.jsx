@@ -103,7 +103,6 @@ function Books() {
     }
 
     const onHandleCreate = () => {
-        console.log('asdasd')
         resetFormBook();
         setOpenFormBook(!openFormBook);
         setOpenFormSearchBook(false)
